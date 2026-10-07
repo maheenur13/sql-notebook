@@ -1,0 +1,90 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Postgres: run SQL on save (watch)",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/pg.py",
+        "watch"
+      ],
+      "windows": {
+        "command": "python"
+      },
+      "problemMatcher": [],
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      "label": "Postgres: run current file in terminal",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/pg.py",
+        "run",
+        "${file}"
+      ],
+      "windows": {
+        "command": "python"
+      },
+      "problemMatcher": {
+        "owner": "psql",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^psql:(.+?):(\\d+): (ERROR|WARNING|NOTICE):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "severity": 3,
+          "message": 4
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Postgres: psql shell",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/pg.py",
+        "psql"
+      ],
+      "windows": {
+        "command": "python"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Postgres: tail server log",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/pg.py",
+        "log"
+      ],
+      "windows": {
+        "command": "python"
+      },
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Postgres: reset database",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/pg.py",
+        "reset"
+      ],
+      "windows": {
+        "command": "python"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
