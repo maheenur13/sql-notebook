@@ -46,7 +46,7 @@ Every save fills in the results:
 
 ```sql
 SELECT * FROM person;
-/* ▶ ✓ · 0.199 ms
+/* ▶ ✓
  id |     name     |   address   | date_of_birth
 ----+--------------+-------------+---------------
   1 | Jahidun Nur  | 123 Main St | 1999-02-01
@@ -70,7 +70,8 @@ You can tell it's running if a terminal panel says `Watching ./*.sql`. If there 
 - **An error gets a `✗ error` block** with the message. Statements below it don't run, so they get no results.
 - **Results are replaced on every save.** Don't type your own notes inside a `/* ▶ ... */` block, because they'll be overwritten.
 - **Results are ordinary SQL comments**, so the file still runs anywhere.
-- **Your cursor stays where it is** when the results are written in.
+- **Your cursor stays where it is** when the results are written in. Only result blocks that actually changed are rewritten.
+- **Timings aren't written into the file**, because they change on every run. You can see them in the watcher's terminal, or with `EXPLAIN ANALYZE`.
 - **To remove all results**, use VS Code's find and replace with regex `\n/\* ▶[\s\S]*?\n\*/` and an empty replacement.
 
 ## Commands
@@ -100,7 +101,7 @@ The tasks use `python3` on macOS/Linux and `python` on Windows automatically.
 
 ```sql
 SELECT * FROM personss;
-/* ▶ ✗ error · 0.577 ms
+/* ▶ ✗ error
 ERROR:  relation "personss" does not exist
 LINE 1: SELECT * FROM personss;
                       ^

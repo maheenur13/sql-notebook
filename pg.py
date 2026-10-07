@@ -133,19 +133,24 @@ def run_inline(path):
         parts.append(chunk)
         if k >= len(results):                              # psql stopped before this one
             continue
-        times = re.findall(r"^Time: (.*)$", results[k], flags=re.M)
+        # No timings in the file: they change every run, and VS Code reloads everything between the first and
+        # last changed line as one edit, which throws the cursor to the bottom. Timings stay in the terminal.
         body = re.sub(r"^Time: .*\n?", "", results[k], flags=re.M).rstrip()
-        if not body and not times:
+        if not body:
             continue
-        head = ("✗ error" if "ERROR:" in body else "✓") + (f" · {times[-1]}" if times else "")
+        head = "✗ error" if "ERROR:" in body else "✓"
         body = body.replace("*/", "*\\/")                   # a "*/" in the data would end our comment early
-        parts.append(f"\n/* ▶ {head}\n{body}\n*/" if body else f"\n/* ▶ {head}\n*/")
+        parts.append(f"\n/* ▶ {head}\n{body}\n*/")
     parts.append(sql[ends[-1] if ends else 0:])
+    print(out.replace(MARK + "\n", ""), end="")
 
+    text = "".join(parts)
+    if text.replace("\n", nl) == raw:                       # nothing changed: don't touch the file
+        return
     # Atomic swap: a plain open("w") truncates first, VS Code can reload the empty file and the cursor jumps to the end.
     tmp = f"{path}.tmp"
     with open(tmp, "w", encoding="utf-8", newline=nl) as f:
-        f.write("".join(parts))
+        f.write(text)
     for _ in range(10):
         try:
             os.replace(tmp, path)
@@ -154,7 +159,6 @@ def run_inline(path):
             time.sleep(0.1)
     else:
         os.replace(tmp, path)
-    print(out.replace(MARK + "\n", ""), end="")
 
 
 def watch():
