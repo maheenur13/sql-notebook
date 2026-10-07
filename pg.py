@@ -24,7 +24,9 @@ DB = "learn"
 DATA = ROOT / ".pgdata"
 LOGS = ROOT / "logs"
 MARK = "@@END@@"
-BLOCK = re.compile(r"\n/\* ▶ [^\n]*\n.*?\n\*/", re.S)
+# A result block ends at the first line ending in */ (data can't contain */, it's escaped), so a stray
+# keystroke on the closing line doesn't orphan the block.
+BLOCK = re.compile(r"\n/\* ▶ [^\n]*\n.*?\*/[ \t]*(?=\n|$)", re.S)
 
 # UTF-8 so ▶/✓ print on any Windows console; line buffering so output shows up live in VS Code tasks.
 sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
